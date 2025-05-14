@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pengumuman Kelulusan</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 40px; }
+    .container { max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+    input, button { padding: 10px; margin: 10px 0; width: 100%; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; }
+    .result { margin-top: 20px; padding: 20px; border-radius: 8px; font-size: 16px; }
+    .lulus { background-color: #d4edda; color: #155724; }
+    .tidak-lulus { background-color: #f8d7da; color: #721c24; }
+    .not-found { background-color: #fff3cd; color: #856404; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Pengumuman Kelulusan</h2>
+    <p>Masukkan <strong>NISN</strong> untuk melihat hasil kelulusan:</p>
+    <input type="text" id="nisn" placeholder="Contoh: 109437227">
+    <button onclick="cekKelulusan()">Cek Kelulusan</button>
+    <div id="output" class="result"></div>
+  </div>
+
+  <script>
+    const dataSiswa = [
+      // === PASTE DATA DI SINI ===
+      {kelas:"IX A",nisn:"109437227",nama:"ALIYA ROSHA",status:"LULUS"},
+      {kelas: "IX A", nisn: "71112624", nama: "ANDI ARJUNA", status: "TIDAK LULUS"},
+      {kelas: "IX A", nisn: "107795188", nama: "Archi Tri Sugianto", status: "LULUS"},
+      {kelas: "IX A", nisn: "102533821", nama: "ARKAN JULIAN INTAN", status: "LULUS"},
+      {kelas: "IX A", nisn: "105830015", nama: "AZKIA NURUL FILZA", status: "LULUS"},
+      {kelas: "IX A", nisn: "87908125", nama: "Bari Mursyid", status: "LULUS"},
+      {kelas: "IX A", nisn: "102533831", nama: "FARDHAN FAIZ AL MUNAWAR", status: "LULUS"},
+      {kelas: "IX A", nisn: "102256375", nama: "GHAZA AL GAZALI RAHAYKAL", status: "LULUS"},
+      {kelas: "IX A", nisn: "94284481", nama: "GRESIA CINTA ANUGRAHANI", status: "LULUS"},
+      {kelas: "IX A", nisn: "98938545", nama: "KAIVA NABILA PUTRI", status: "LULUS"},
+      {kelas: "IX A", nisn: "92885908", nama: "KENZA INTANIA", status: "LULUS"},
+      {kelas: "IX A", nisn: "101768675", nama: "M. FADHIL PERMATA", status: "LULUS"},
+      {kelas: "IX A", nisn: "105608077", nama: "M. Rasya Abi Mael", status: "LULUS"},
+      {kelas: "IX A", nisn: "109612823", nama: "M. SYAHMI AL HADY RITONGA", status: "LULUS"},
+      {kelas: "IX A", nisn: "91285275", nama: "MUHAMMAD ARAFI", status: "LULUS"},
+      {kelas: "IX A", nisn: "84343192", nama: "MUHAMMAD DAVA", status: "LULUS"},
+      {kelas: "IX A", nisn: "94490836", nama: "NAZHIFA KEYZA AZZAMY", status: "LULUS"},
+      {kelas: "IX A", nisn: "105668729", nama: "NITA SUPRIYATI", status: "LULUS"},
+      {kelas: "IX A", nisn: "103392523", nama: "NOVITA SARI", status: "LULUS"},
+      {kelas: "IX A", nisn: "107096816", nama: "RAHMA DANISA PUTRI", status: "LULUS"},
+      {kelas: "IX A", nisn: "106338636", nama: "RICHIE FEMAS SAPUTRA", status: "LULUS"},
+      {kelas: "IX A", nisn: "99655088", nama: "RIDHO AHHADA", status: "LULUS"},
+      {kelas: "IX A", nisn: "97732796", nama: "RIKI AFRISAL", status: "LULUS"},
+      {kelas: "IX A", nisn: "104383234", nama: "SANIA SAPITRI", status: "LULUS"},
+      {kelas: "IX A", nisn: "91627809", nama: "Saskia", status: "LULUS"},
+      {kelas: "IX A", nisn: "101118710", nama: "Sela Ifana Pakpahan", status: "LULUS"},
+      {kelas: "IX A", nisn: "109916064", nama: "SIFFA SALSABILLA", status: "LULUS"},
+      {kelas: "IX A", nisn: "113615981", nama: "SUJAI", status: "LULUS"},
+      {kelas: "IX A", nisn: "106714111", nama: "Tiara Oktarina", status: "LULUS"},
+      {kelas: "IX A", nisn: "97832151", nama: "VITA VERLITA PUTRI", status: "LULUS"},
+      {kelas: "IX A", nisn: "104665660", nama: "WENDIYANSYAH", status: "LULUS"},
+      {kelas: "IX A", nisn: "101323639", nama: "Zama Tabitta Putra", status: "LULUS"},
+      {kelas: "IX A", nisn: "101839857", nama: "ZITHA NUVARA RABYA", status: "LULUS"},
+      {kelas: "IX B", nisn: "106002603", nama: "AGUNG DARMAWAN", status: "LULUS"},
+      {kelas: "IX B", nisn: "85595579", nama: "AJI PRATAMA", status: "LULUS"},
+      {kelas: "IX B", nisn: "96372048", nama: "Albert Permana Purba", status: "LULUS"},
+      {kelas: "IX B", nisn: "102125249", nama: "ALIFAH ALWA NABILLA", status: "LULUS"},
+      {kelas: "IX B", nisn: "101270027", nama: "Amelinda Oktaria", status: "LULUS"},
+      {kelas: "IX B", nisn: "81217609", nama: "ANDIKA RAMADANI", status: "LULUS"},
+      {kelas: "IX B", nisn: "109608977", nama: "Andini", status: "LULUS"},
+      {kelas: "IX B", nisn: "96139709", nama: "DIMAS GALANG", status: "LULUS"},
+      {kelas: "IX B", nisn: "96269071", nama: "DWI RANTIKA", status: "LULUS"},
+      {kelas: "IX B", nisn: "103797327", nama: "EKA WULANDARI", status: "LULUS"},
+      {kelas: "IX B", nisn: "104036944", nama: "EVA LISNAWATI", status: "LULUS"},
+      {kelas: "IX B", nisn: "106795567", nama: "GUNAWAN", status: "LULUS"},
+      {kelas: "IX B", nisn: "103603846", nama: "IRWANSYAH", status: "LULUS"},
+      {kelas: "IX B", nisn: "104619490", nama: "JUHAIDA", status: "LULUS"},
+      {kelas: "IX B", nisn: "104070657", nama: "M. DIMAS RAYADI", status: "LULUS"},
+      {kelas: "IX B", nisn: "3100993797", nama: "MAFELYZA", status: "LULUS"},
+      {kelas: "IX B", nisn: "98114690", nama: "Mela Lestari", status: "LULUS"},
+      {kelas: "IX B", nisn: "104334573", nama: "MELDA LIDYA", status: "LULUS"},
+      {kelas: "IX B", nisn: "98984816", nama: "Muhammad Alray Rizki Utama", status: "LULUS"},
+      {kelas: "IX B", nisn: "106954586", nama: "MUHAMMAD BETRAND ALFATH", status: "LULUS"},
+      {kelas: "IX B", nisn: "103897013", nama: "MUHAMMAD FAHRI", status: "LULUS"},
+      {kelas: "IX B", nisn: "109922579", nama: "NABILLA PUTRI ARLISYA", status: "LULUS"},
+      {kelas: "IX B", nisn: "95860350", nama: "NAJWA SAFA AZ - ZAHRA", status: "LULUS"},
+      {kelas: "IX B", nisn: "105578319", nama: "RESIFA MAULIDDIA", status: "LULUS"},
+      {kelas: "IX B", nisn: "106931885", nama: "RIO SAPUTRA", status: "LULUS"},
+      {kelas: "IX B", nisn: "161595300", nama: "SALSABILA", status: "LULUS"}
+      {kelas: "IX B", nisn: "103104800", nama: "SHAQUMY AIDINA PUTRI", status: "LULUS"},
+     {kelas: "IX B", nisn: "99558164", nama: "SLAMET RIDO SAPUTRA", status: "LULUS"},
+     {kelas: "IX B", nisn: "96617592", nama: "ZULHAYKAL", status: "LULUS"},
+
+     {kelas: "IX C", nisn: "104593892", nama: "ADELLIA PRATIWI", status: "LULUS"},
+     {kelas: "IX C", nisn: "3099641570", nama: "AMANDA NAZWA RAHMADINA", status: "LULUS"},
+     {kelas: "IX C", nisn: "103077157", nama: "AZZAHRA ARULIA AFIKA", status: "LULUS"},
+     {kelas: "IX C", nisn: "107077845", nama: "Beryan Nur Hakim", status: "LULUS"},
+     {kelas: "IX C", nisn: "3113355945", nama: "CHELSIE DWI APRILIA", status: "LULUS"},
+     {kelas: "IX C", nisn: "108201803", nama: "DIMAS LUWIH PRAYOGA", status: "LULUS"},
+     {kelas: "IX C", nisn: "105548195", nama: "FADLY YULIZAR", status: "LULUS"},
+     {kelas: "IX C", nisn: "101414000", nama: "Fairus Adeva Romansa", status: "LULUS"},
+     {kelas: "IX C", nisn: "108809893", nama: "GABRIEL HEBER WASKITO", status: "LULUS"},
+     {kelas: "IX C", nisn: "106107742", nama: "GHANENDRA AL FAQIH", status: "LULUS"},
+     {kelas: "IX C", nisn: "103450994", nama: "INTAN NUR SIFA", status: "LULUS"},
+     {kelas: "IX C", nisn: "3093936659", nama: "ISMA NOVITA", status: "LULUS"},
+     {kelas: "IX C", nisn: "108648246", nama: "M. RAFI FADHIL PRATAMA", status: "LULUS"},
+     {kelas: "IX C", nisn: "104695153", nama: "M.RAFIF AZMI.MT", status: "LULUS"},
+     {kelas: "IX C", nisn: "96084049", nama: "MISYELLA HERJUNITA", status: "LULUS"},
+     {kelas: "IX C", nisn: "95486634", nama: "Muhammad Andre", status: "LULUS"},
+     {kelas: "IX C", nisn: "99122116", nama: "Muhammad Fardan Arman", status: "LULUS"},
+     {kelas: "IX C", nisn: "92928735", nama: "NABIL RADIPTIA", status: "LULUS"},
+     {kelas: "IX C", nisn: "85602559", nama: "Nisa Amelia", status: "LULUS"},
+     {kelas: "IX C", nisn: "111646216", nama: "Peby Salsa Anggita", status: "LULUS"},
+     {kelas: "IX C", nisn: "111469976", nama: "RAFI PAHRIZI", status: "LULUS"},
+     {kelas: "IX C", nisn: "106369047", nama: "RAHMA LIA HAZIZAH", status: "LULUS"},
+     {kelas: "IX C", nisn: "109853099", nama: "Rama Aditiya", status: "LULUS"},
+     {kelas: "IX C", nisn: "91840941", nama: "Ranun Bintang Nofita", status: "LULUS"},
+     {kelas: "IX C", nisn: "105978847", nama: "RENDI ADITYA", status: "LULUS"},
+     {kelas: "IX C", nisn: "101527187", nama: "RENDI SAPUTRA", status: "LULUS"},
+     {kelas: "IX C", nisn: "92594876", nama: "REZA HIDAYAT", status: "LULUS"},
+     {kelas: "IX C", nisn: "119506941", nama: "SANTRI YUZIRA", status: "LULUS"},
+     {kelas: "IX C", nisn: "107015165", nama: "SELFI SEFITASARI", status: "LULUS"},
+     {kelas: "IX C", nisn: "97032489", nama: "WAHYU ADI SEMBAYU", status: "LULUS"},
+     {kelas: "IX C", nisn: "92297465", nama: "WAHYUDA ANDESKA", status: "LULUS"},
+     {kelas: "IX C", nisn: "108225377", nama: "Yoki Saputra", status: "LULUS"},
+     {kelas: "IX D", nisn: "102461629", nama: "AHMAD ZAKARIA ROMADHON", status: "LULUS"},
+     {kelas: "IX D", nisn: "95578762", nama: "ANDHIKA SAPUTRA", status: "LULUS"},
+     {kelas: "IX D", nisn: "106965317", nama: "Angga Saputra", status: "LULUS"},
+     {kelas: "IX D", nisn: "92184351", nama: "ARIFA NADIA SAFWA", status: "LULUS"},
+     {kelas: "IX D", nisn: "104353869", nama: "Ariya Dwi Andrianto", status: "LULUS"},
+     {kelas: "IX D", nisn: "86520727", nama: "BAMBANG EDI", status: "LULUS"},
+     {kelas: "IX D", nisn: "108889438", nama: "DEVINA", status: "LULUS"},
+     {kelas: "IX D", nisn: "104252050", nama: "EMELY DEA ACHICA", status: "LULUS"},
+     {kelas: "IX D", nisn: "92053579", nama: "FAHRI KHANANI", status: "LULUS"},
+     {kelas: "IX D", nisn: "93849646", nama: "FIRMANSAH NANANG SAPUTRA", status: "LULUS"},
+     {kelas: "IX D", nisn: "103276463", nama: "IBNU DWI RAKA AL FURQON", status: "LULUS"},
+     {kelas: "IX D", nisn: "106884925", nama: "LUKAS REINHARD PARULIAN SIMORANGKIR", status: "LULUS"},
+     {kelas: "IX D", nisn: "108076504", nama: "M. Nasrulloh", status: "LULUS"},
+     {kelas: "IX D", nisn: "109444600", nama: "Marcel Surya Darma", status: "LULUS"},
+     {kelas: "IX D", nisn: "104962527", nama: "MUHAMMAD CHESSA ALIFIANSYAH PUTRA", status: "LULUS"},
+     {kelas: "IX D", nisn: "108641391", nama: "MUHAMMAD HERIANSYAH", status: "LULUS"},
+     {kelas: "IX D", nisn: "106880487", nama: "RAISYA NADINDEA HERZA", status: "LULUS"},
+     {kelas: "IX D", nisn: "107889635", nama: "RENI AGUSTIA", status: "LULUS"},
+     {kelas: "IX D", nisn: "98683549", nama: "RESTI LARASATI", status: "LULUS"},
+     {kelas: "IX D", nisn: "104426905", nama: "REVA ARDELIA", status: "LULUS"},
+     {kelas: "IX D", nisn: "86974298", nama: "Riko Fauzan", status: "LULUS"},
+     {kelas: "IX D", nisn: "86505009", nama: "RISKY WINOTO", status: "LULUS"},
+     {kelas: "IX D", nisn: "109780228", nama: "Siti Rahayu", status: "LULUS"},
+     {kelas: "IX D", nisn: "116816935", nama: "SOLIHIN", status: "LULUS"},
+     {kelas: "IX D", nisn: "108730161", nama: "Uswatun Hasanah", status: "LULUS"},
+     {kelas: "IX D", nisn: "93028237", nama: "Wahyu Viraja", status: "LULUS"},
+     {kelas: "IX D", nisn: "87253305", nama: "WULAN SAFITRI", status: "LULUS"},
+     {kelas: "IX D", nisn: "107752383", nama: "WULAN SAPUTRI", status: "LULUS"},
+     {kelas: "IX D", nisn: "109191082", nama: "Yulia Safitri", status: "LULUS"},
+     {kelas: "IX E", nisn: "3098429039", nama: "ADIL SAPUTRA", status: "LULUS"},
+     {kelas: "IX E", nisn: "3105410410", nama: "ADITYA TEGUH PRASETYO", status: "LULUS"},
+     {kelas: "IX E", nisn: "93383781", nama: "ALKHAFI REVIN SAPUTRA", status: "LULUS"},
+     {kelas: "IX E", nisn: "3098862243", nama: "DIN ANA BELLA", status: "TIDAK LULUS"},
+     {kelas: "IX E", nisn: "3107497155", nama: "DINDA SAPRILIA", status: "LULUS"},
+     {kelas: "IX E", nisn: "101242574", nama: "ECI ABELIA PUTRI BR. PURBA", status: "LULUS"},
+     {kelas: "IX E", nisn: "3090778869", nama: "FAHRI FEBIAN", status: "LULUS"},
+     {kelas: "IX E", nisn: "103559689", nama: "HASNAN FADHIL", status: "LULUS"},
+     {kelas: "IX E", nisn: "97020820", nama: "I MADE SATRIA ARYA ADHYAKSA", status: "LULUS"},
+     {kelas: "IX E", nisn: "109214767", nama: "KEYSHA DWI AUREDIAL", status: "LULUS"},
+     {kelas: "IX E", nisn: "92358572", nama: "LANJAR TRI PRASTYO", status: "LULUS"},
+     {kelas: "IX E", nisn: "91825206", nama: "M. SIDIK SETIA RAMADANI", status: "LULUS"},
+     {kelas: "IX E", nisn: "101945630", nama: "MAS NURUL TRI AS SYAFA", status: "LULUS"},
+     {kelas: "IX E", nisn: "107473937", nama: "MAS NURUL TRI AS SYIFA", status: "LULUS"},
+     {kelas: "IX E", nisn: "92587466", nama: "MUHAMMAD ALIF HABIBY", status: "LULUS"},
+     {kelas: "IX E", nisn: "103410603", nama: "MUHAMMAD ILHAM", status: "LULUS"},
+     {kelas: "IX E", nisn: "109076623", nama: "MUHAMMAD NOUVAL RAFA IZDIHAR", status: "LULUS"},
+     {kelas: "IX E", nisn: "105633041", nama: "Muhammad Rivanzi Taher", status: "LULUS"},
+     {kelas: "IX E", nisn: "103018556", nama: "NAJWA FAZIRA", status: "LULUS"},
+     {kelas: "IX E", nisn: "95040970", nama: "NURHADI", status: "LULUS"},
+     {kelas: "IX E", nisn: "109620493", nama: "OKTAVIANA", status: "LULUS"},
+     {kelas: "IX E", nisn: "107596820", nama: "PUTRI OKTAVIA NINGRUM", status: "LULUS"},
+     {kelas: "IX E", nisn: "105372081", nama: "Rafa Adi Saputra", status: "LULUS"},
+     {kelas: "IX E", nisn: "92957353", nama: "RANGGA PRATAMA", status: "LULUS"},
+     {kelas: "IX E", nisn: "109483279", nama: "Rido Pratama", status: "LULUS"},
+     {kelas: "IX E", nisn: "105831025", nama: "RIO PRATAMA", status: "LULUS"},
+     {kelas: "IX E", nisn: "91328613", nama: "RISA BINTAN OKTAVIANI", status: "LULUS"},
+     {kelas: "IX E", nisn: "105782471", nama: "RISKA AULIA", status: "LULUS"},
+     {kelas: "IX E", nisn: "106393248", nama: "SELVI AULIA SAPITRI", status: "LULUS"},
+     {kelas: "IX E", nisn: "106352675", nama: "Siti Murni Sari", status: "LULUS"},
+     {kelas:"IX E",nisn:"102254857",nama:"Tasya Nurmaulidya",status:"LULUS"}
+    ];
+
+    function cekKelulusan() {
+      const input = document.getElementById("nisn").value.trim();
+      const output = document.getElementById("output");
+      const siswa = dataSiswa.find(s => s.nisn === input);
+
+      if (!input) {
+        output.innerHTML = "<div class='not-found'>Silakan masukkan NISN Anda.</div>";
+        return;
+      }
+
+      if (siswa) {
+        const statusClass = siswa.status === "LULUS" ? "lulus" : "tidak-lulus";
+        output.innerHTML = `
+          <div class="${statusClass}">
+            <h3>${siswa.nama}</h3>
+            <p><strong>Kelas:</strong> ${siswa.kelas}</p>
+            <p><strong>Status Kelulusan:</strong> ${siswa.status}</p>
+          </div>
+        `;
+      } else {
+        output.innerHTML = "<div class='not-found'>Data tidak ditemukan. Pastikan NISN sudah benar.</div>";
+      }
+    }
+  </script>
+</body>
+</html>
